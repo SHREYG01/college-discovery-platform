@@ -9,9 +9,7 @@ export default function MainLayout({
   return (
     <>
       <Header />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
       <Footer />
     </>
   );

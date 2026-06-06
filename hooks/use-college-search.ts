@@ -1,13 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import { searchColleges } from "@/actions/college.actions";
 import type { CollegeListItem } from "@/types";
 
 import { useDebounce } from "./use-debounce";
 
 export function useCollegeSearch(initialColleges: CollegeListItem[] = []) {
+  const router = useRouter();
   const [colleges, setColleges] = useState(initialColleges);
   const [query, setQuery] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -16,14 +17,12 @@ export function useCollegeSearch(initialColleges: CollegeListItem[] = []) {
   function handleSearch(value: string) {
     setQuery(value);
 
-    startTransition(async () => {
-      const formData = new FormData();
-      formData.set("query", value);
-      const result = await searchColleges(formData);
-
-      if (result.data) {
-        setColleges(result.data);
+    startTransition(() => {
+      const params = new URLSearchParams();
+      if (value.trim()) {
+        params.set("query", value.trim());
       }
+      router.push(`/colleges${params.toString() ? `?${params}` : ""}`);
     });
   }
 
@@ -32,5 +31,6 @@ export function useCollegeSearch(initialColleges: CollegeListItem[] = []) {
     query: debouncedQuery,
     isPending,
     handleSearch,
+    setColleges,
   };
 }

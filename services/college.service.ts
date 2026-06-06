@@ -26,6 +26,40 @@ export async function getColleges(filters: CollegeFilters = {}, page = 1) {
   });
 }
 
+export async function getFeaturedColleges(limit = 6) {
+  return prisma.college.findMany({
+    orderBy: { rating: "desc" },
+    take: limit,
+    select: {
+      id: true,
+      name: true,
+      location: true,
+      fees: true,
+      rating: true,
+    },
+  });
+}
+
+export async function getCollegeStats() {
+  const [collegeCount, reviewCount, avgRating, colleges] = await Promise.all([
+    prisma.college.count(),
+    prisma.review.count(),
+    prisma.college.aggregate({ _avg: { rating: true } }),
+    prisma.college.findMany({ select: { location: true } }),
+  ]);
+
+  const citiesCount = new Set(
+    colleges.map((c) => c.location.split(",")[0]?.trim()).filter(Boolean),
+  ).size;
+
+  return {
+    collegeCount,
+    reviewCount,
+    citiesCount,
+    avgRating: avgRating._avg.rating ?? 0,
+  };
+}
+
 export async function getCollegeById(id: string) {
   return prisma.college.findUnique({
     where: { id },

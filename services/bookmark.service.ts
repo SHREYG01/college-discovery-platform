@@ -8,6 +8,35 @@ export async function getBookmarksByUserId(userId: string) {
   });
 }
 
+export async function isCollegeBookmarked(userId: string, collegeId: string) {
+  const bookmark = await prisma.bookmark.findUnique({
+    where: { userId_collegeId: { userId, collegeId } },
+  });
+
+  return !!bookmark;
+}
+
+export async function saveBookmark(userId: string, collegeId: string) {
+  const existing = await prisma.bookmark.findUnique({
+    where: { userId_collegeId: { userId, collegeId } },
+  });
+
+  if (existing) {
+    return { bookmarked: true };
+  }
+
+  await prisma.bookmark.create({ data: { userId, collegeId } });
+  return { bookmarked: true };
+}
+
+export async function removeBookmark(userId: string, collegeId: string) {
+  await prisma.bookmark.deleteMany({
+    where: { userId, collegeId },
+  });
+
+  return { bookmarked: false };
+}
+
 export async function toggleBookmark(userId: string, collegeId: string) {
   const existing = await prisma.bookmark.findUnique({
     where: { userId_collegeId: { userId, collegeId } },
