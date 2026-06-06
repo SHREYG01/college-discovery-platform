@@ -1,13 +1,11 @@
 import Link from "next/link";
 
 import { BookmarkButton } from "@/components/bookmarks/bookmark-button";
-import type { College } from "@/types";
+import { parseLocation } from "@/lib/utils/location";
+import type { CollegeDetailFields } from "@/types";
 
 type CollegeHeaderProps = {
-  college: Pick<
-    College,
-    "id" | "name" | "location" | "fees" | "rating" | "description"
-  >;
+  college: CollegeDetailFields;
   isBookmarked?: boolean;
 };
 
@@ -25,6 +23,8 @@ export function CollegeHeader({
   college,
   isBookmarked = false,
 }: CollegeHeaderProps) {
+  const { city, state } = parseLocation(college.location);
+
   return (
     <div className="border-b border-border bg-gradient-to-br from-indigo-50 via-white to-violet-50">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -55,7 +55,7 @@ export function CollegeHeader({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
                 {college.name}
               </h1>
               <BookmarkButton
@@ -65,35 +65,42 @@ export function CollegeHeader({
               />
             </div>
 
-            <p className="mt-3 flex items-center gap-2 text-base text-muted">
-              <svg
-                className="h-5 w-5 shrink-0 text-primary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                />
-              </svg>
-              {college.location}
-            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1 text-sm text-foreground shadow-sm">
+                <svg
+                  className="h-4 w-4 text-primary"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                  />
+                </svg>
+                {city}
+              </span>
+              {state && (
+                <span className="inline-flex items-center rounded-full bg-primary-light px-3 py-1 text-sm font-medium text-primary">
+                  {state}
+                </span>
+              )}
+            </div>
 
-            <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted">
+            <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted sm:text-lg">
               {college.description}
             </p>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:max-w-xl">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:max-w-2xl">
           <div className="rounded-2xl border border-border bg-white px-5 py-4 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted">
               Annual fees

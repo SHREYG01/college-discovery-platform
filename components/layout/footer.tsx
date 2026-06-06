@@ -5,6 +5,7 @@ import { APP_NAME } from "@/lib/constants";
 const footerLinks = {
   Platform: [
     { label: "Browse Colleges", href: "/colleges" },
+    { label: "Compare Colleges", href: "/compare" },
     { label: "Bookmarks", href: "/bookmarks" },
   ],
   Resources: [

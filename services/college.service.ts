@@ -60,6 +60,19 @@ export async function getCollegeStats() {
   };
 }
 
+export async function getCollegeSelectOptions() {
+  return prisma.college.findMany({
+    select: {
+      id: true,
+      name: true,
+      location: true,
+      fees: true,
+      rating: true,
+    },
+    orderBy: { name: "asc" },
+  });
+}
+
 export async function getCollegeById(id: string) {
   return prisma.college.findUnique({
     where: { id },

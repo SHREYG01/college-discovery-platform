@@ -11,6 +11,7 @@ import { UserNav } from "./user-nav";
 
 const navLinks = [
   { href: "/colleges", label: "Colleges" },
+  { href: "/compare", label: "Compare" },
   { href: "/bookmarks", label: "Bookmarks" },
 ];
 
